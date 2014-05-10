@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="71560294">
+    <data-source source="LOCAL" name="MySQL - wildbook@127.0.0.1" uuid="1b67bd8f-1c68-4ab8-bc9e-67228fd8b8fa">
+      <driver-ref>mysql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1:3306/wildbook</jdbc-url>
+      <user-name>root</user-name>
+      <schema-pattern>wildbook.*</schema-pattern>
+      <default-schemas>wildbook.*</default-schemas>
+      <driver-properties>
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+      </driver-properties>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+
