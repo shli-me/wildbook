@@ -1,3 +1,5 @@
+-- DROP DATABASE wildbook;
+
 
 CREATE DATABASE IF NOT EXISTS `wildbook` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `wildbook`;
@@ -5,8 +7,10 @@ USE `wildbook`;
 
 CREATE TABLE IF NOT EXISTS `users` (
   `username` 	varchar(100) NOT NULL,
+  `email`	 	varchar(100) NOT NULL,
   `firstname` 	varchar(100) NOT NULL,
   `lastname` 	varchar(100) NOT NULL,
+  `gender` 		bool NOT NULL,
   `street` 		varchar(100) NOT NUlL,
   `state` 		char(2)  NOT NULL,
   `zipcode` 	int(5) NOT NULL,

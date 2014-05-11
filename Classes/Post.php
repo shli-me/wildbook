@@ -24,7 +24,6 @@ namespace wildbook {
 
         function __construct($postid)
         {
-            mysqli_connect();
         }
 
         function display()

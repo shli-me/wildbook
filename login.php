@@ -5,10 +5,45 @@
  * Date: 5/9/14
  * Time: 9:36 PM
  */
+namespace wildbook;
+include_once('header.php');
 
-// Check if logged in
-if(isset($_SESSION['currentUser'] ))
+// Login logic
+if(isset($_POST['username']) && isset($_POST['password']))
 {
-    ('index.php');
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+    $dbConnection = dbConnect();
+    $query = 'SELECT 1 FROM users WHERE username = ? AND password = ?';
+    $stmt = $dbConnection->prepare($query);
+//    echo $query . "; "; //. $stmt;
+    $stmt->bind_param('ss', $username, $password);
+    $stmt->execute();
+    $stmt->bind_result($result);
+    $stmt->fetch();
+    if(!$result) echo "Wrong username/password";
+    else
+    {
+        session_start();
+        $_SESSION['currentUser'] = $_POST['username'];
+        redirectTo('index.php');
+    }
 }
+else {
 
+    // Check if logged in
+    if(isset($_SESSION['currentUser'] ))
+    {
+        redirectTo('index.php');
+    }
+    else
+    {
+        ?>
+            <a href="register.php" >Sign up</a>
+        <?php
+        $form = new Form("login.php", "post", "Log in");
+        $form->addInputs(new FormInput("text", "username", "Username: "));
+        $form->addInputs(new FormInput("password", "password", "Password: "));
+        echo $form->display();
+    }
+}
