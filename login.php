@@ -14,7 +14,7 @@ if(isset($_POST['username']) && isset($_POST['password']))
     $username = $_POST['username'];
     $password = md5($_POST['password']);
     $dbConnection = dbConnect();
-    $query = 'SELECT 1 FROM users WHERE username = ? AND password = ?';
+    $query = 'SELECT 1 FROM users WHERE username = ? AND pw = ?';
     $stmt = $dbConnection->prepare($query);
 //    echo $query . "; "; //. $stmt;
     $stmt->bind_param('ss', $username, $password);

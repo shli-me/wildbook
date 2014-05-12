@@ -1,7 +1,13 @@
 
 CALL `wildbook`.`populate_user`('shannon');
+CALL `wildbook`.`insert_post`
+('jerrypin', 'jerrypin', 'Hi!', null, NOW(), 'Public', null, null, @id);
+SELECT @id;
 
-CALL `wildbook`.`populate_post`();
+CALL `wildbook`.`populate_post`(1);
+
+CALL `wildbook`.`populate_user_friends`('jerrypin');
+
 
 -- To sign up:
 INSERT INTO users (username,email,firstname,lastname,gender,street,state,city,zipcode,birthdate) VALUES ('JohnSmith','JohnSmith@mail.com','John','Smith',1,'111 Main St.','NY','11201','1/2/1990');
@@ -37,6 +43,7 @@ UPDATE friends SET status = 'Accepted' WHERE sentby='JerryPin' AND receivedby='P
 UPDATE friends SET status = 'Accepted' WHERE sentby='RachelHen' AND receivedby='JohnSmith';
 UPDATE friends SET status = 'Accepted' WHERE sentby='RachelHen' AND receivedby='AbbyGail';
 UPDATE friends SET status = 'Accepted' WHERE sentby='PhilPen' AND receivedby='JohnSmith';
+
 
 
 -- List all friends

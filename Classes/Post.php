@@ -24,25 +24,50 @@ namespace wildbook {
         private $comments = array();
         private $likers = array();
 
-        function __construct($postid)
+        /**
+         * Populates fields for post
+         * $params can be either the postid or
+         * an assoc array with all fields
+         * @param $params
+         *
+         */
+        function __construct($params)
         {
-            $result = runStoredProcedure('populate_post', $postid);
-            // Check for rows
-            $row = $result->fetch_assoc();
-            if(count($row))
+            // $params is an assoc array (probably from get_user_wallposts)
+            if(is_array($params))
             {
-                $this->author   	= new User($row['author']);
-                $this->receiver 	= new User($row['receiver']);
-                $this->activity 	= $row['actid']; // Will be turned into object
-                $this->location 	= $row['locid']; // Will be turned into object
-                $this->imagesrc 	= $row['content'];
-                $this->text     	= $row['caption'];
-                $this->posttime		= $row['posttime'];
-                $this->permission	= $row['permission_type'];
+                $this->id           = $params['postid'];
+                $this->author   	= new User($params['author']);
+                $this->receiver 	= new User($params['receiver']);
+                $this->activity 	= $params['actid']; // Will be turned into object
+                $this->location 	= $params['locid']; // Will be turned into object
+                $this->imagesrc 	= $params['content'];
+                $this->text     	= $params['caption'];
+                $this->posttime		= $params['posttime'];
+                $this->permission	= $params['permission_type'];
+
             }
-            else
+            else // $params is the postid
             {
-                echo "Post doesn't exist";
+                $result = runStoredProcedure('populate_post', $params);
+                // Check for rows
+                $row = $result->fetch_assoc();
+                if(count($row))
+                {
+                    $this->id = $params;
+                    $this->author   	= new User($row['author']);
+                    $this->receiver 	= new User($row['receiver']);
+                    $this->activity 	= $row['actid']; // Will be turned into object
+                    $this->location 	= $row['locid']; // Will be turned into object
+                    $this->imagesrc 	= $row['content'];
+                    $this->text     	= $row['caption'];
+                    $this->posttime		= $row['posttime'];
+                    $this->permission	= $row['permission_type'];
+                }
+                else
+                {
+                    echo "Post doesn't exist";
+                }
             }
         }
 
@@ -59,11 +84,6 @@ namespace wildbook {
 
         function display()
         {
-            $html = '<div class="post">';
-            $html = '<div></div>';
-
-            $html .= '</div>';
-            return $html;
 ?>
 
             <div class="blog-post">

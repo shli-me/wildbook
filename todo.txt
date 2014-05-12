@@ -1,0 +1,28 @@
+Displaying a news feed
+
+Create a form to write posts 
+	uploading content like images
+		image stored in /images dir 
+		create naming convention 
+
+Locations and activities
+	How/where should they be displayed?
+	
+Liking things
+	likes need to show up under comments, posts, locations and activities
+
+Allow user to change permissions for content
+	
+Friend requests
+
+Searching
+
+
+Stored procedures for
+	Friend requests
+	News feed
+	Liking things
+	Update permission for posted content
+	... maybe other things I'm forgetting atm
+	Logging in (right now, it's hard-coded)
+
