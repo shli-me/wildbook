@@ -24,8 +24,9 @@ if(isset($_POST['username']) && isset($_POST['password']))
     if(!$result) echo "Wrong username/password";
     else
     {
+        echo "Successful login";
         session_start();
-        $_SESSION['currentUser'] = $_POST['username'];
+        $_SESSION['currentUser'] = new User($username);
         redirectTo('index.php');
     }
 }
@@ -42,8 +43,8 @@ else {
             <a href="register.php" >Sign up</a>
         <?php
         $form = new Form("login.php", "post", "Log in");
-        $form->addInputs(new FormInput("text", "username", "Username: "));
-        $form->addInputs(new FormInput("password", "password", "Password: "));
+        $form->addInputs(new FormInput("text", "name='username'", "Username: ", "username"));
+        $form->addInputs(new FormInput("password", "name='password'", "Password: ", "password"));
         echo $form->display();
     }
 }

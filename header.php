@@ -6,11 +6,18 @@ require_once('functions.php');
 
 
 ?>
-<head>
-    <link rel="stylesheet" href="css/bootstrap.css" />
-    <link rel="stylesheet" href="css/bootstrap-theme.css" />
-</head>
-<?php
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/bootstrap.css" />
+        <link rel="stylesheet" href="css/bootstrap-theme.css" />
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle"
+                </div>
+            </div>
 
-
-?>
+        </div>

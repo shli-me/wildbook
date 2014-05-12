@@ -1,13 +1,18 @@
 <?php
 
 namespace wildbook;
-
 include_once('header.php');
 
 dbConnect();
 checkLoggedIn();
 
 
-echo $_SESSION['currentUser'];
+$currentUser = $_SESSION['currentUser'];
+
 ?>
-hi index page
+
+
+
+<?php
+
+include_once('footer.php');

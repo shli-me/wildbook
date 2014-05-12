@@ -14,9 +14,12 @@ $form->addInputs(new FormInput("text", "userName", "Username: "));
 $form->addInputs(new FormInput("text", "email", "Email: "));
 $form->addInputs(new FormInput("text", "firstName", "First Name: "));
 $form->addInputs(new FormInput("text", "lastName", "Last Name: "));
+$form->addInputs(new FormInput("radio", "gender", "Gender: "));
+$form->addInputs(new FormInput("radio", "gender", "Gender: "));
 $form->addInputs(new FormInput("text", "address", "Address: "));
 $form->addInputs(new FormInput("text", "city", "City: "));
 $form->addInputs(new FormInput("text", "state", "State: "));
 $form->addInputs(new FormInput("text", "zip", "Zipcode: "));
+$form->addInputs(new FormInput("password", "password", "Password: "));
 echo $form->display();
 ?>

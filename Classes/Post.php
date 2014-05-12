@@ -24,13 +24,13 @@ namespace wildbook {
 
         function __construct($postid)
         {
+
         }
 
         function display()
         {
             $html = '<div class="post">';
-
-
+            $html = '<div></div>';
 
             $html .= '</div>';
             return $html;

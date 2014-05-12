@@ -33,3 +33,54 @@ UPDATE friends SET status = 'Accepted' WHERE sentby='JerryPin' AND receivedby='P
 UPDATE friends SET status = 'Accepted' WHERE sentby='RachelHen' AND receivedby='JohnSmith';
 UPDATE friends SET status = 'Accepted' WHERE sentby='RachelHen' AND receivedby='AbbyGail';
 UPDATE friends SET status = 'Accepted' WHERE sentby='PhilPen' AND receivedby='JohnSmith';
+
+
+-- List all friends
+SELECT sentby FROM friends WHERE receivedby = @username AND status = 'Accepted'
+UNION
+SELECT receivedby FROM friends WHERE sentby = @username AND status = 'Accepted'
+
+-- List friends of friends
+WITH firstLevelFriends (friend) AS
+( 
+SELECT sentby FROM friends WHERE receivedby = @username AND status = 'Accepted'
+UNION
+SELECT receivedby FROM friends WHERE sentby = @username AND status = 'Accepted'
+)
+SELECT sentby FROM friends WHERE receivedby IN (firstLevelFriends) AND status = 'Accepted'
+UNION
+SELECT receivedby FROM friends WHERE sentby IN (firstLevelFriends) AND status = 'Accepted'
+
+--View news feed
+-- view all posts by a user's friends or friends of friends or anyone who posted with @keyword
+WITH firstLevelFriends (friend) AS
+( 
+SELECT sentby FROM friends WHERE receivedby = @username AND status = 'Accepted'
+UNION
+SELECT receivedby FROM friends WHERE sentby = @username AND status = 'Accepted'
+),
+secondLevelFriends (fofs) AS
+(
+SELECT sentby FROM friends WHERE receivedby IN (firstLevelFriends) AND status = 'Accepted' AND receivedby <> @username
+UNION
+SELECT receivedby FROM friends WHERE sentby IN (firstLevelFriends) AND status = 'Accepted' AND sentby <> @username
+)
+SELECT * FROM posts WHERE 
+(
+	(
+	(receiver IN (SELECT * FROM firstLevelFriends) OR author IN (SELECT * FROM firstLevelFriends))
+	AND (permission_type = 'Friends')
+	)
+	OR 
+	(
+	(receiver IN (SELECT * FROM secondLevelFriends) OR author IN (SELECT * FROM secondLevelFriends))
+	AND (permission_type = 'Friends of Friends')
+	)
+	OR permission_type = 'Public'
+)
+AND text CONTAINS(@keyword);
+
+
+
+
+

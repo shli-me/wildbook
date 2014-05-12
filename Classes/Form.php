@@ -47,7 +47,7 @@ namespace wildbook {
 
         function display()
         {
-            $html = '<form action="'. $this->action .'" method="'. $this->method . '">';
+            $html = '<form action="'. $this->action .'" method="'. $this->method . '" class="'.$this->class.'" role=>';
             foreach($this->inputs as $in)
             {
                 $html .= $in->display() . '</br>';

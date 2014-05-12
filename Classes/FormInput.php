@@ -10,37 +10,47 @@ namespace wildbook;
 
 
 class FormInput {
-    private $display;
-    private $name;
     private $type;
+    private $attributes;
+    private $label;
+    private $name;
+
 
     /**
-     * Create HTML for form input
-     * if $disp is set, that means the $name is also given
-     * @param $type
-     * @param null $name
-     * @param null $disp
+     * Pass in the type, then a string of attributes (name="", value="", etc...)
+     * Usually, only text and password types would need the $name param (for the LABEL tag)
      *
+     *
+     * @param $type
+     * @param $attrib
+     * @param null $label
+     * @param null $name
+     * @internal param $attributes
      */
-    function __construct($type, $name=null, $disp=null)
+    function __construct($type, $attrib, $label = null, $name = null)
     {
         $this->type = $type;
+        $this->attributes = $attrib;
+        $this->label = $label;
         $this->name = $name;
-        $this->display = $disp;
     }
 
     function display()
     {
-        $html = ($this->display ? '<label for="' .$this->name .'">' . $this->display . '</label>' : '')
-                .
-                '<input type="'.$this->type.'" ';
-                if($this->type=="submit" && $this->name)
-                    $html .= 'value="'.$this->name . '"';
-                else if ($this->name)
-                {
-                    $html .= 'name="'.$this->name .'"';
-                }
-        $html .= '/>';
+        $html = "<input type='{$this->type}' {$this->attributes} >";
+        switch($this->type)
+        {
+            case "radio":
+                $html .= $this->label;
+                break;
+            case "password":
+            case "text":
+                $html = "<label for='{$this->name}'> {$this->label} </label>" . $html;
+                break;
+            default:
+                break;
+        }
+
         return $html;
     }
 } 
