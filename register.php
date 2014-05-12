@@ -33,9 +33,17 @@ if( isset($_POST['email'])      &&
     $params[] = $_POST['birthdate'];
     $params[] = md5($_POST['password']);
 
-    $res = runStoredProcedure('insert_user', $params, '@success');
-    $success = $res->query("SELECT @success");
-    if($success) echo "YAY! You're registered";
+    $res = runStoredProcedure('insert_user', $params, '@fail');
+    if($res[1]->error) { echo $res[1]->error; }
+    $fail = $res[1]->query("SELECT @fail AS fail");
+    if($fail->fetch_object()->fail)
+    {
+        $_POST['err'] = "Username already taken.";
+    }
+    else
+    {
+        $_POST['success'] = "Successfully registered!";
+    }
 }
 else if(
     !isset($_POST['email'])      &&
@@ -77,6 +85,26 @@ else // A field was left empty
 
     <?php
 
+}
+
+
+if (isset($_POST['err']))
+{
+    ?>
+    <div class="alert alert-danger">
+        <?= $_POST['err'] ?>
+    </div>
+<?php
+}
+
+if (isset($_POST['success']))
+{
+    ?>
+    <div class="alert alert-success">
+        <?= $_POST['success'] ?>
+    </div>
+
+<?php
 }
 
 ?>

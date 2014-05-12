@@ -1,4 +1,7 @@
 
+CALL `wildbook`.`populate_user`('shannon');
+
+CALL `wildbook`.`populate_post`();
 
 -- To sign up:
 INSERT INTO users (username,email,firstname,lastname,gender,street,state,city,zipcode,birthdate) VALUES ('JohnSmith','JohnSmith@mail.com','John','Smith',1,'111 Main St.','NY','11201','1/2/1990');

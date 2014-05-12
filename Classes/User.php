@@ -42,7 +42,7 @@ namespace wildbook {
              */
 
             $result = runStoredProcedure("populate_user", $username);
-            $row = $result->fetch_assoc();
+            $row = $result->fetch_array();
 
             $this->firstName    = $row['firstname'];
             $this->lastName     = $row['lastname'];
@@ -52,6 +52,14 @@ namespace wildbook {
             $this->state        = $row['state'];
             $this->city         = $row['city'];
             $this->zip          = $row['zipcode'];
+            $result->free();
+
+            $result = runStoredProcedure("populate_user_friends", $username);
+
+            while($row = $result->fetch_array())
+            {
+                $this->friends[] = $row['friend'];
+            }
 
         }
 

@@ -5,17 +5,22 @@
  * Date: 5/11/14
  * Time: 11:15 PM
  */
+namespace wildbook;
 include_once('header.php');
 
-/*
- * Displays the profile of the user who's username was passed through GET
- *
- */
+if(isset($_GET['u']))
+{
+    $user = new User($_GET['u']);
 
-?><div class="container">
+    
+
+}
+
+?>
+<div class="container">
 
     <div class="blog-header">
-        <h1 class="blog-title">The Bootstrap Blog</h1>
+        <h1 class="blog-title"><?=$user->getName()?></h1>
         <p class="lead blog-description">The official example template of creating a blog with Bootstrap.</p>
     </div>
 

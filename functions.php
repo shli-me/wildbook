@@ -32,7 +32,7 @@ function runStoredProcedure($procedure, $params, $out=null)
 
     if(is_array($params)) // $params is an array
     {
-        echo "params is an array";
+//        echo "params is an array";
         foreach($params as $p)
         {
             $query .= "'" . $p . "',";
@@ -47,15 +47,23 @@ function runStoredProcedure($procedure, $params, $out=null)
     }
     $query .= $out;
     $query .= ");";
-    echo $query;
+//    echo $query;
     if(!$res = $mysqli->query($query)) echo "CALL failed: (" . $mysqli->errno . ") ". $mysqli->error;
 
     // If this procedure has an OUT param, we want to return the connection as well
     if($out)
     {
-        $res[] = $mysqli;
+        $arr = array();
+        $arr[] = $res;
+        $arr[] = $mysqli;
+        return $arr;
     }
     else return $res;
+}
+
+function displayArrow()
+{
+    return "<span class='arrow'>-></span>";
 }
 
 function redirectTo($url)
