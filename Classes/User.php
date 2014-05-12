@@ -24,6 +24,8 @@ namespace wildbook {
 
         function __construct($username)
         {
+            $this->username = $username;
+
             /*
              * Columns for populate_user
              *
@@ -40,7 +42,7 @@ namespace wildbook {
              */
 
             $result = runStoredProcedure("populate_user", $username);
-            $row = $result;
+            $row = $result->fetch_assoc();
 
             $this->firstName    = $row['firstname'];
             $this->lastName     = $row['lastname'];

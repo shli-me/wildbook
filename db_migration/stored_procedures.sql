@@ -36,3 +36,32 @@ WHERE postid = id;
 
 END proc_main $$
 
+DELIMITER $$
+CREATE PROCEDURE `insert_user`(
+	IN username 	VARCHAR(100),
+	IN email 		VARCHAR(100),
+	IN firstname 	VARCHAR(100),
+	IN lastname 	VARCHAR(100),
+	IN gender 		TINYINT(1),
+	IN street 		VARCHAR(100),
+	IN state 		CHAR(2),
+	IN city			VARCHAR(100),
+	IN zipcode		INT(5),
+	IN birthdate	DATE,
+	IN password		CHAR(32),
+	OUT success bool
+)
+BEGIN
+-- Check for already-existing username
+	SELECT 0 INTO success 
+	FROM users U
+	WHERE U.username = username OR U.email = email;
+	
+	IF success = 1
+	THEN
+	INSERT INTO users (username,email,firstname,lastname,gender,street,state,city,zipcode,birthdate, `password`) 
+	VALUES (username,email,firstname,lastname,gender,street,state,city,zipcode,birthdate, password);
+	END IF;
+
+END$$
+

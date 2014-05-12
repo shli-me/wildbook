@@ -20,29 +20,42 @@ function dbConnect()
  *
  * @param $procedure
  * @param $params
+ * @param $out
  * @internal param $args
  *
  * @return \mysqli_result
  */
-function runStoredProcedure($procedure, $params)
+function runStoredProcedure($procedure, $params, $out=null)
 {
     $mysqli = dbConnect();
-    $query = "CALL {$procedure}('";
+    $query = "CALL {$procedure}(";
 
-    if(is_array($params))
+    if(is_array($params)) // $params is an array
     {
+        echo "params is an array";
         foreach($params as $p)
         {
-            $query .= $p . ',';
+            $query .= "'" . $p . "',";
         }
-        // Remove the extra comma at the end
-        $query = substr($query, 0, strlen($query)-1);
+        // Remove the extra comma at the end if necessary
+        if(!$out) $query = substr($query, 0, strlen($query)-1);
     }
-    else $query .= $params; // $params must be a string
-    $query .= "');";
+    else // $params must be a string
+    {
+        $query .= "'" . $params . "'";
+        if($out) $query .= ',';
+    }
+    $query .= $out;
+    $query .= ");";
     echo $query;
     if(!$res = $mysqli->query($query)) echo "CALL failed: (" . $mysqli->errno . ") ". $mysqli->error;
-    return $res->fetch_assoc();
+
+    // If this procedure has an OUT param, we want to return the connection as well
+    if($out)
+    {
+        $res[] = $mysqli;
+    }
+    else return $res;
 }
 
 function redirectTo($url)
@@ -53,7 +66,6 @@ function redirectTo($url)
 
 function checkLoggedIn()
 {
-    session_start();
     // Show the login page if user isn't logged in
     if(!isset($_SESSION['currentUser']))
     {
@@ -62,3 +74,7 @@ function checkLoggedIn()
     }
 }
 
+function sessionStart()
+{
+    if(!isset($_SESSION)) session_start();
+}
