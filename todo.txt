@@ -12,6 +12,8 @@ Liking things
 	likes need to show up under comments, posts, locations and activities
 
 Allow user to change permissions for content
+
+Implementing permissions
 	
 Friend requests
 

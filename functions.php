@@ -35,7 +35,9 @@ function runStoredProcedure($procedure, $params, $out=null)
 //        echo "params is an array";
         foreach($params as $p)
         {
-            $query .= "'" . $p . "',";
+            // Pass in null if $p is empty (to avoid passing in empty quotes)
+            if(!is_null($p)) $query .= "'" . $p . "',";
+            else $query .= "null,";
         }
         // Remove the extra comma at the end if necessary
         if(!$out) $query = substr($query, 0, strlen($query)-1);
