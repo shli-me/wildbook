@@ -100,7 +100,7 @@ namespace wildbook {
         /**
          * @return mixed
          */
-        public function getBirhtdate()
+        public function getBirthdate()
         {
             return $this->birhtdate;
         }
