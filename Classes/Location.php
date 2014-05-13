@@ -24,10 +24,11 @@ namespace wildbook;
             if(count($row))
             {
                 $this->id = $locid;
+                /*
                 $this->likes        = $row['likes'];
-                $this->activity 	= $row['actid']; // Will be turned into object?
-                $this->long      	= $row['long'];
-                $this->lat 	        = $row['lat'];
+                $this->activity 	= $row['actid']; // Will be turned into object? */
+                $this->long      	= $row['longitude'];
+                $this->lat 	        = $row['latitude'];
                 $this->name         = $row['name'];
             }
             else
@@ -36,11 +37,34 @@ namespace wildbook;
             }
         }
 
-        public function seemap()
+        public function lat()
         {
+            return $this->lat;
+        }
 
+        public function long()
+        {
+            return $this->long;
+        }
+
+        public function name()
+        {
+            return $this->name;
+        }
+
+        public function locid()
+        {
+            return $this->locid;
+        }
+
+        public function display()
+        {
+            ?>
+                <div>
+                    <?php echo $this->name() . " <div> <a href = 'locationtest.php?long=$this->long&lat=$this->lat'>" . $this->long() . " " . $this-> lat()."</a></div>"?>
+                </div>
+
+            <?php
         }
     }
 }
-
-?>
