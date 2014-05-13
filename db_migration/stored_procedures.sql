@@ -36,6 +36,15 @@ proc_main:Begin
 
 End proc_main $$
 
+Create Procedure `populate_comment_likes` (In commentid int(10))
+proc_main:Begin
+
+  Select username, firstname, lastname
+  From likes_comments JOIN users
+  Where cid = commentid;
+
+End proc_main $$
+
 DELIMITER $$
 
 Create Procedure `count_loc_likes` (In activityid int(10), locationid int(10))
@@ -47,6 +56,15 @@ proc_main:Begin
 
 End proc_main $$
 
+Create Procedure `populate_loc_likes` (In activityid int(10), locationid int(10))
+proc_main:Begin
+
+  Select username, firstname, lastname
+  From likes_locations_activities JOIN users
+  Where actid = activityid And locid = locationid;
+
+End proc_main $$
+
 DELIMITER $$
 
 Create Procedure `count_post_likes` (In pid int(10))
@@ -54,6 +72,15 @@ proc_main:Begin
 
   Select count(*)
   From likes_posts
+  Where postid = pid;
+
+End proc_main $$
+
+Create Procedure `populate_post_likes` (In pid int(10))
+proc_main:Begin
+
+  Select username, firstname, lastname
+  From likes_posts JOIN users
   Where postid = pid;
 
 End proc_main $$
