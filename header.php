@@ -12,6 +12,7 @@ sessionStart();
         <link rel="stylesheet" href="css/bootstrap.css" />
         <link rel="stylesheet" href="css/bootstrap-theme.css" />
         <link rel="stylesheet" href="css/mystyle.css" />
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.js"/>
         <script type="text/javascript">
 
             // Get the HTTP Object

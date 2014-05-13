@@ -8,20 +8,21 @@
 
 namespace wildbook;
 
-require_once('function.php');
+require_once('Classes/class_includes.php');
+require_once('functions.php');
 
 sessionStart();
 checkLoggedIn();
 
-if(isset($_GET['commentText']))
+if(isset($_POST['commentText']) && isset($_GET['p']))
 {
-    
+    $params = array();
+    $params[] = $_SESSION['currentUser']->getUsername();
+    $params[] = $_GET['p'];
+    $params[] = date('Y-m-d h:i:s');
+    $params[] = $_POST['commentText'];
+    runStoredProcedure('insert_comment', $params);
 }
 
+
 ?>
-
-<body onload="window.back()">
-
-
-
-</body>

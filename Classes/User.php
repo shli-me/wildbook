@@ -164,7 +164,7 @@ namespace wildbook {
         {
             ?>
                 <div>
-                    <?php echo  $this->wholename() ?>
+                    <?php echo  $this->getNameLink() ?>
                 </div>
             <?php
         }

@@ -166,18 +166,38 @@ namespace wildbook {
                                         </a>
                                 </div>
                                 <div id="collapse<?=$this->id?>" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                        <form role="form" action="comment.php" method="post">
+                                    <div class="panel-body" id="commentTextBox">
+                                        <form role="form" id="post_<?=$this->id?>_commentform" method="post" action="comment.php?p=<?=$this->id?>" >
                                             <input type="text" name="commentText" />
-                                            <input type="submit" />
+                                            <input type="Submit" id="post_<?=$this->id?>_submit" value="Submit" />
                                         </form>
                                     </div>
+                                    <div class="panel-body" id="post_<?=$this->id?>_commentsList">
                                     <?php
                                         foreach($this->comments as $comment)
                                         {
                                             $comment->display();
                                         }
                                     ?>
+                                        <script type="text/javascript">
+
+                                            $("#post_<?=$this->id?>_commentform").submit(
+                                                function(e){
+                                                    $.ajax({ // create an AJAX call...
+                                                        data: $(this).serialize(), // get the form data
+                                                        type: $(this).attr('method'), // GET or POST
+                                                        url: $(this).attr('action'), // the file to call
+                                                        success: function(response) { // on success..
+                                                            $('#post_<?=$this->id?>_commentsList').html(response); // update the DIV
+                                                        }
+                                                    });
+                                                    return false;
+                                                });
+
+
+                                        </script>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
