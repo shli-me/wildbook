@@ -1,4 +1,4 @@
-Displaying a news feed
+Displaying a news feed - OK
 
 Create a form to write posts 
 	uploading content like images
@@ -7,6 +7,9 @@ Create a form to write posts
 
 Locations and activities
 	How/where should they be displayed?
+	Creating a new location
+		google maps
+		
 	
 Liking things
 	likes need to show up under comments, posts, locations and activities
