@@ -125,3 +125,85 @@ BEGIN
 
 END$$
 
+DELIMITER $$
+CREATE PROCEDURE `insert_comment_likes`(
+	IN username 	VARCHAR(100),
+	IN cid        int(10),
+	OUT success bool
+)
+BEGIN
+-- Check for already-existing
+	SELECT 0 INTO success
+	FROM likes_comments l
+	WHERE l.username = username and l.cid = cid;
+
+  If success = 0
+  Then
+  Delete From likes_comments l
+  WHERE l.username = username and l.cid = cid;
+  End If;
+
+
+	IF success = 1
+	THEN
+	INSERT INTO likes_comments (username, cid)
+	VALUES (username, cid);
+	END IF;
+
+END$$
+
+
+DELIMITER $$
+CREATE PROCEDURE `insert_location_likes`(
+	IN username 	VARCHAR(100),
+	IN actid        int(10),
+	IN locid        int(10),
+	OUT success bool
+)
+BEGIN
+-- Check for already-existing
+	SELECT 0 INTO success
+	FROM likes_locations_activities l
+	WHERE l.username = username and l.actid = actid and l.locid = locid;
+
+  If success = 0
+  Then
+  Delete From likes_locations_activities l
+  WHERE l.username = username and l.actid = actid and l.locid = locid;
+  End If;
+
+
+	IF success = 1
+	THEN
+	INSERT INTO likes_locations_activities (username, actid, locid)
+	VALUES (username, actid, locid);
+	END IF;
+
+END$$
+
+DELIMITER $$
+CREATE PROCEDURE `insert_post_likes`(
+	IN username 	VARCHAR(100),
+	IN postid        int(10),
+	OUT success bool
+)
+BEGIN
+-- Check for already-existing
+	SELECT 0 INTO success
+	FROM likes_posts l
+	WHERE l.username = username and l.postid = postid;
+
+  If success = 0
+  Then
+  Delete From likes_posts l
+  WHERE l.username = username and l.postid = postid;
+  End If;
+
+
+	IF success = 1
+	THEN
+	INSERT INTO likes_comments (username, postid)
+	VALUES (username, postid);
+	END IF;
+
+END$$
