@@ -29,4 +29,19 @@ class Comment {
         $this->text = $row['text'];
     }
 
+    function display()
+    {
+        ?>
+            <div class="panel-body">
+                <p>
+                    <?=$this->text?>
+                </p>
+                <p class="comment-info">
+                    <span><?=$this->posttime?></span>
+                    <span><?=$this->author?></span>
+                </p>
+            </div>
+        <?php
+    }
+
 } 

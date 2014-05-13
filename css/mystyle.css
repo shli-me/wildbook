@@ -7,6 +7,11 @@ body {
     }
 }
 
+.comment-info
+{
+    font-size:16px;
+}
+
 a :hover
 {
     cursor: hand;

@@ -123,7 +123,7 @@ namespace wildbook {
                     </p>
                     <p>
                         <div class="btn-group">
-                            <button id="post_<?=$this->id?>_likebtn" type="button" class="btn btn-danger" onclick="likeAPost(<?=$this->id?>);">
+                            <button id="post_<?=$this->id?>_likebtn" type="button" class="btn btn-default" onclick="likeAPost(<?=$this->id?>);">
                                 <?php
                                 if(in_array($_SESSION['currentUser'], $this->likers))
                                 {
@@ -131,7 +131,7 @@ namespace wildbook {
                                 } else echo count($this->likers) .  " Like";
                                 ?>
                             </button>
-                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
@@ -152,27 +152,36 @@ namespace wildbook {
                                 ?>
                             </ul>
                         </div>
-                        <a href="" onclick="comment(<?=$this->id?>);">Comment</a>
                     </p>
                     <?php
-                    if($this->likers)
-                    {
-                        ?>
-                        <p>
-                            <!-- display a count and link to expand likers -->
-                        </p>
+                        if($this->comments)
+                    ?>
+                        <div class="panel-group" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?=$this->id?>">
+                                            <h4 class="panel-title">
+                                                Comment (<?=count($this->comments)?>)
+                                            </h4>
+                                        </a>
+                                </div>
+                                <div id="collapse<?=$this->id?>" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <form role="form" action="comment.php" method="post">
+                                            <input type="text" name="commentText" />
+                                            <input type="submit" />
+                                        </form>
+                                    </div>
+                                    <?php
+                                        foreach($this->comments as $comment)
+                                        {
+                                            $comment->display();
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
                     <?php
-                    }
-
-                    if($this->comments)
-                    {
-                        ?>
-                        <p>
-                            <!-- link to expand comments -->
-                        </p>
-                    <?php
-
-                    }
                     ?>
                 </div>
             </div><!-- /.panel -->
