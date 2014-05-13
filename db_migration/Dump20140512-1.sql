@@ -190,8 +190,8 @@ DROP TABLE IF EXISTS `locations`;
 CREATE TABLE `locations` (
   `locid` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `longitude` decimal(10,0) NOT NULL,
-  `latitude` decimal(10,0) NOT NULL,
+  `longitude` double NOT NULL,
+  `latitude` double NOT NULL,
   PRIMARY KEY (`locid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -202,7 +202,7 @@ CREATE TABLE `locations` (
 
 LOCK TABLES `locations` WRITE;
 /*!40000 ALTER TABLE `locations` DISABLE KEYS */;
-INSERT INTO `locations` VALUES (1,'Coney Island',74,41);
+INSERT INTO `locations` VALUES (1,'Coney Island',-73.9,40.59);
 /*!40000 ALTER TABLE `locations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -611,19 +611,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_comment_likes`(
 )
 BEGIN
 -- Check for already-existing
-	SELECT 0 INTO success
+	SELECT COUNT(*) INTO success
 	FROM likes_comments l
 	WHERE l.username = username and l.cid = cid;
 
-  If success = 0
+  If success = 1
   Then
   Delete From likes_comments
-	USING l AS likes_comments
-  WHERE l.username = username and l.cid = cid;
+  WHERE username = username and cid = cid;
   End If;
 
 
-	IF success = 1
+	IF success = 0
 	THEN
 	INSERT INTO likes_comments (username, cid)
 	VALUES (username, cid);
@@ -647,29 +646,25 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_location_likes`(
 	IN username 	VARCHAR(100),
-	IN actid        int(10), 
-	IN locid        int(10),
+	IN actid        int(10),  -- nullable
+	IN locid        int(10),  -- nullable
 	OUT success bool
 )
 BEGIN
 -- Check for already-existing
-	SELECT 0 INTO success
+	SELECT COUNT(*) INTO success
 	FROM likes_locations_activities l
 	WHERE l.username = username and l.actid = actid and l.locid = locid;
 
-  If success = 0
+  If success <> 0
   Then
-  Delete From likes_locations_activities 
-	USING l AS likes_locations_activities 
-  WHERE l.username = username and l.actid = actid and l.locid = locid;
-  End If;
-
-
-	IF success = 1
-	THEN
+	  Delete From likes_locations_activities 
+		USING l AS likes_locations_activities 
+	  WHERE l.username = username and l.actid = actid and l.locid = locid;
+  ELSE
 	INSERT INTO likes_locations_activities (username, actid, locid)
 	VALUES (username, actid, locid);
-	END IF;
+END IF;
 
 END ;;
 DELIMITER ;
@@ -986,4 +981,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-13 13:28:25
+-- Dump completed on 2014-05-13 14:34:35
