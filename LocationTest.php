@@ -21,14 +21,16 @@
     <script type="text/javascript">
         function initialize() {
             var mapOptions = {
-                <!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
-                <!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
-                <!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
-                center: { <?php echo"lat: {$_GET['lat']} , lng: {$_GET['long']}" ?>},<!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
+                center: { <?php echo"lat: {$_GET['lat']} , lng: {$_GET['long']}" ?>},
                 zoom: 12
             };
             var map = new google.maps.Map(document.getElementById("map-canvas"),
                 mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: { <?php echo"lat: {$_GET['lat']} , lng: {$_GET['long']}" ?>},
+                map: map
+            });
         }
     </script>
 </head>
