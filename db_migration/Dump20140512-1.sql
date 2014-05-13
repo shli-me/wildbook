@@ -58,7 +58,7 @@ CREATE TABLE `comments` (
   KEY `postid` (`postid`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`author`) REFERENCES `users` (`username`),
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`postid`) REFERENCES `posts` (`postid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +67,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+INSERT INTO `comments` VALUES (1,'philpen',11,'2014-05-13 03:31:39','a'),(2,'philpen',11,'2014-05-13 03:35:02','b'),(3,'philpen',11,'2014-05-13 03:59:56','hi'),(4,'philpen',11,'2014-05-13 04:01:27','third'),(5,'philpen',11,'2014-05-13 04:19:11','hi'),(6,'philpen',10,'2014-05-13 04:19:24','pls respond'),(7,'philpen',10,'2014-05-13 04:19:27','pls respond'),(8,'philpen',10,'2014-05-13 04:19:58','hello?'),(9,'philpen',10,'2014-05-13 04:20:53','pls');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -228,7 +229,7 @@ CREATE TABLE `posts` (
   KEY `receiver` (`receiver`),
   CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author`) REFERENCES `users` (`username`),
   CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`receiver`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +238,7 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'JerryPin','RachelHen','Hi! How\'s it going?','','2014-03-25 10:10:00','Friends',NULL,NULL),(2,'JerryPin','JerryPin','Today I went to the beach!','','2014-03-02 12:00:00','Public',1,NULL),(3,'PhilPen','JerryPin','Hope everything is well.','','2014-03-26 10:11:00','Friends of Friends',NULL,NULL),(4,'RachelHen','JerryPin','Everything\'s great!','','2014-05-11 12:00:00','Friends of Friends',NULL,NULL),(5,'jerrypin','jerrypin','Hi!','','2014-05-12 11:46:30','Public',0,0),(6,'jerrypin','jerrypin','Hi!',NULL,'2014-05-12 11:46:59','Public',NULL,NULL),(7,'philpen','philpen','Hey',NULL,'2014-05-13 11:42:48','Friends',NULL,NULL),(8,'philpen','philpen','This is my wall! ',NULL,'2014-05-13 11:42:56','Friends',NULL,NULL),(9,'philpen','JerryPin','Hey Jerry How are things going?',NULL,'2014-05-13 11:43:05','Friends',NULL,NULL),(10,'philpen','RachelHen','Hi friend, you have not responded to me yet',NULL,'2014-05-13 11:46:14','Friends',NULL,NULL),(11,'philpen','philpen','',NULL,'2014-05-13 12:58:28','Friends',NULL,NULL);
+INSERT INTO `posts` VALUES (1,'JerryPin','RachelHen','Hi! How\'s it going?','','2014-03-25 10:10:00','Friends',NULL,NULL),(2,'JerryPin','JerryPin','Today I went to the beach!','','2014-03-02 12:00:00','Public',1,NULL),(3,'PhilPen','JerryPin','Hope everything is well.','','2014-03-26 10:11:00','Friends of Friends',NULL,NULL),(4,'RachelHen','JerryPin','Everything\'s great!','','2014-05-11 12:00:00','Friends of Friends',NULL,NULL),(5,'jerrypin','jerrypin','Hi!','','2014-05-12 11:46:30','Public',0,0),(6,'jerrypin','jerrypin','Hi!',NULL,'2014-05-12 11:46:59','Public',NULL,NULL),(7,'philpen','philpen','Hey',NULL,'2014-05-13 11:42:48','Friends',NULL,NULL),(8,'philpen','philpen','This is my wall! ',NULL,'2014-05-13 11:42:56','Friends',NULL,NULL),(9,'philpen','JerryPin','Hey Jerry How are things going?',NULL,'2014-05-13 11:43:05','Friends',NULL,NULL),(10,'philpen','RachelHen','Hi friend, you have not responded to me yet',NULL,'2014-05-13 11:46:14','Friends',NULL,NULL),(11,'philpen','philpen','',NULL,'2014-05-13 12:58:28','Friends',NULL,NULL),(12,'philpen','annon','Hey ',NULL,'2014-05-13 03:12:09','Friends',NULL,NULL),(13,'philpen','JerryPin','HEY!',NULL,'2014-05-13 04:21:10','Friends',NULL,NULL);
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -594,6 +595,39 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_comment` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_comment`(
+	IN p_author VARCHAR(100),
+	IN p_postid INT(10),
+	IN p_posttime DATETIME,
+	IN p_text TEXT
+)
+BEGIN
+
+INSERT INTO comments (author, postid, posttime, `text`)
+VALUES
+(
+p_author ,
+p_postid ,
+p_posttime,
+p_text
+);
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `insert_comment_likes` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -859,6 +893,52 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_loc` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_loc`(In locationid int(10))
+proc_main:Begin
+
+    Select locid, name, longitude, latitude
+    From locations
+    Where locid = locationid;
+
+  End proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_loc_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_loc_likes`(In activityid int(10), locationid int(10))
+proc_main:Begin
+
+  Select username, firstname, lastname
+  From likes_locations_activities JOIN users
+  Where actid = activityid And locid = locationid;
+
+End proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `populate_post` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -927,6 +1007,52 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_search1` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_search1`(search VARCHAR(100))
+BEGIN
+
+  SELECT username
+  FROM users
+  WHERE firstname REGEXP search || lastname REGEXP search;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_search2` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_search2`(IN search VARCHAR(100))
+proc_main:BEGIN
+
+    SELECT locid
+    FROM locations
+    WHERE name REGEXP search;
+
+  END proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `populate_user` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -981,4 +1107,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-13 14:34:35
+-- Dump completed on 2014-05-13 16:25:31
