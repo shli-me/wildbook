@@ -14,7 +14,8 @@ namespace wildbook {
         private $lastName;
         private $profilePictureDir;
 
-        private $birhtdate;
+        private $birthdate;
+        private $gender;
         private $address;
         private $state;
         private $city;
@@ -47,7 +48,8 @@ namespace wildbook {
             $this->firstName    = $row['firstname'];
             $this->lastName     = $row['lastname'];
             $this->email        = $row['email'];
-            $this->birhtdate    = $row['birthdate'];
+            $this->gender       = $row['gender'];
+            $this->birthdate    = $row['birthdate'];
             $this->address      = $row['street'];
             $this->state        = $row['state'];
             $this->city         = $row['city'];
@@ -86,7 +88,7 @@ namespace wildbook {
 
         public function getUsername() { return $this->username; }
         public function getName() { return $this->firstName . " " . $this->lastName; }
-        public function getNameLink() { return "<a href='users/{$this->username}'>{$this->getName()}</a>"; }
+        public function getNameLink() { return "<a href='user.php?u={$this->username}'>{$this->getName()}</a>"; }
         public function getFirstName() { return $this->firstName; }
         public function getLastName() { return $this->lastName; }
         /**
@@ -102,7 +104,16 @@ namespace wildbook {
          */
         public function getBirthdate()
         {
-            return $this->birhtdate;
+            return $this->birthdate;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getGender()
+        {
+            if($this->gender) return 'Male';
+            else return 'Female';
         }
 
         /**

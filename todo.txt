@@ -1,4 +1,4 @@
-Displaying a news feed
+Displaying a news feed - OK
 
 Create a form to write posts 
 	uploading content like images
@@ -11,10 +11,13 @@ Locations and activities
 -----------When you want to display, make an iframe of locationtest.php
 -----------pass it long and lat through $_Get
 	
+	
 Liking things
 	likes need to show up under comments, posts, locations and activities
 
 Allow user to change permissions for content
+	
+Implementing permissions
 	
 Friend requests
 

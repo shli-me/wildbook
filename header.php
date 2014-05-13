@@ -31,7 +31,7 @@ sessionStart();
                     else
                     {
                 ?>
-                    <a class="navbar-brand" href="user.php?u=<?=$_SESSION['currentUser']->getUsername()?>">Home</a>
+                    <a class="navbar-brand" href="user.php?u=<?=$_SESSION['currentUser']->getUsername()?>"><?=$_SESSION['currentUser']->getUsername()?></a>
                     <a class="navbar-brand" href="login.php?cmd=logout">Log out</a>
 
                 <?php

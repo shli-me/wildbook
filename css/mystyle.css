@@ -17,7 +17,7 @@ body {
  */
 
 body {
-    font-family: Georgia, "Times New Roman", Times, serif;
+    font-family: Tahoma, Arial, sans-serif;
     color: #555;
 }
 
@@ -98,7 +98,7 @@ h6, .h6 {
 .blog-title {
     margin-top: 30px;
     margin-bottom: 0;
-    font-size: 60px;
+    font-size: 40px;
     font-weight: normal;
 }
 .blog-description {
@@ -133,7 +133,6 @@ h6, .h6 {
 }
 
 
-
 /* Pagination */
 .pager {
     margin-bottom: 60px;
@@ -156,7 +155,7 @@ h6, .h6 {
 }
 .blog-post-title {
     margin-bottom: 5px;
-    font-size: 40px;
+    font-size: 24px;
 }
 .blog-post-meta {
     margin-bottom: 20px;
