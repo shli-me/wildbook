@@ -7,7 +7,10 @@ body {
     }
 }
 
-
+a :hover
+{
+    cursor: hand;
+}
 /*
  * The following CSS was from the blog template made by @mdo
  */

@@ -68,7 +68,25 @@ namespace wildbook {
                 {
                     echo "Post doesn't exist";
                 }
+                $result->free();
             }
+
+            // Get the likers
+            $result = runStoredProcedure('populate_post_likes', $this->id);
+            while($row = $result->fetch_array())
+            {
+                $this->likers[] = new User($row['username']);
+            }
+            $result->free();
+
+            // Get the comments
+            $result = runStoredProcedure('populate_post_comments', $this->id);
+            while($row = $result->fetch_array())
+            {
+                $this->comments[] = new Comment($row['cid']);
+            }
+            $result->free();
+
         }
 
         function getPostTitle()
@@ -86,24 +104,78 @@ namespace wildbook {
         {
 ?>
 
-            <div class="blog-post">
-                <h2 class="blog-post-title"><?=$this->getPostTitle()?></h2>
-                <p class="blog-post-meta"><?=$this->posttime?></p>
-                <p>
-                    <?php
-                        if($this->imagesrc)
-                        {
-                            ?>
+            <div class="panel panel-default">
+                <h2 class="panel-heading"><?=$this->getPostTitle()?></h2>
+                <div class="panel-body">
+                    <p><?=$this->posttime?></p>
+                        <?php
+                    if($this->imagesrc)
+                    {
+                        ?>
+                        <p>
                             <img src="<?=$this->imagesrc?>" />
-                            <?php
-                        }
-
+                        </p>
+                    <?php
+                    }
                     ?>
-                </p>
-                <p>
-                    <?=$this->text?>
-                </p>
-            </div><!-- /.blog-post -->
+                    <p>
+                        <?=$this->text?>
+                    </p>
+                    <p>
+                        <div class="btn-group">
+                            <button id="post_<?=$this->id?>_likebtn" type="button" class="btn btn-danger" onclick="likeAPost(<?=$this->id?>);">
+                                <?php
+                                if(in_array($_SESSION['currentUser'], $this->likers))
+                                {
+                                    echo count($this->likers) . " Unlike";
+                                } else echo count($this->likers) .  " Like";
+                                ?>
+                            </button>
+                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul id="post_<?=$this->id?>_likes" class="dropdown-menu" role="menu">
+
+                                <?php
+                                if($this->likers)
+                                {
+                                    foreach($this->likers as $liker)
+                                    {
+                                    ?>
+                                    <li>
+                                        <?=$liker->getNameLink()?>
+                                    </li>
+                                <?php
+                                    }
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <a href="" onclick="comment(<?=$this->id?>);">Comment</a>
+                    </p>
+                    <?php
+                    if($this->likers)
+                    {
+                        ?>
+                        <p>
+                            <!-- display a count and link to expand likers -->
+                        </p>
+                    <?php
+                    }
+
+                    if($this->comments)
+                    {
+                        ?>
+                        <p>
+                            <!-- link to expand comments -->
+                        </p>
+                    <?php
+
+                    }
+                    ?>
+                </div>
+            </div><!-- /.panel -->
 
 <?php
 

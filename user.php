@@ -8,12 +8,44 @@
 namespace wildbook;
 include_once('header.php');
 
+
+
 if(isset($_GET['u']))
 {
+    $user = new User($_GET['u']);
+
+    if(isset($_POST['wallposttext']))
+    {
+    /*
+     * 	IN author VARCHAR(100),
+        IN receiver VARCHAR(100),
+        IN caption TEXT,
+        IN content TEXT,
+        IN posttime DATETIME,
+        IN permission_type VARCHAR(20),
+        IN locid INT(10),
+        IN actid INT(10),
+        OUT postid INT(10),
+     */
+        $params = array();
+        $params[] = $_SESSION['currentUser']->getUsername();
+        $params[] = $user->getUsername();
+        $params[] = $_POST['wallposttext'];
+        $params[] = null; // TODO
+        $params[] = date('Y-m-d h:i:s');
+        $params[] = 'Friends'; // TODO
+        $params[] = null; // TODO
+        $params[] = null; // TODO
+        $out = '@pid';
+        runStoredProcedure('insert_post', $params, $out);
+
+    }
     $posts = array();
 
-    $user = new User($_GET['u']);
-    $result = runStoredProcedure('get_user_wallposts',$user->getUsername());
+    $params = array();
+    $params[] = $user->getUsername();
+    $params[] = $_SESSION['currentUser']->getUsername();
+    $result = runStoredProcedure('get_user_wallposts',$params);
 
     while($row = $result->fetch_array())
     {
@@ -21,7 +53,6 @@ if(isset($_GET['u']))
     }
 
 }
-
 ?>
 <div class="container">
 
@@ -32,12 +63,18 @@ if(isset($_GET['u']))
     <div class="row">
 
         <div class="col-sm-8 blog-main">
+            <form role="form" action="user.php?u=<?=$user->getUsername()?>" method="post">
+                <div class="form-group">
+                    <label for="wallposttext">Post something on <?=$user->getName()?>'s Wall</label>
+                    <input type="text" class="form-control" name="wallposttext" placeholder="Enter message...">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
             <?php
             foreach($posts as $post)
             {
                 $post->display();
             }
-
             ?>
 
         </div><!-- /.blog-main -->

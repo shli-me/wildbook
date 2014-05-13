@@ -228,7 +228,7 @@ CREATE TABLE `posts` (
   KEY `receiver` (`receiver`),
   CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`author`) REFERENCES `users` (`username`),
   CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`receiver`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +237,7 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'JerryPin','RachelHen','Hi! How\'s it going?','','2014-03-25 10:10:00','Friends',NULL,NULL),(2,'JerryPin','JerryPin','Today I went to the beach!','','2014-03-02 12:00:00','Public',1,NULL),(3,'PhilPen','JerryPin','Hope everything is well.','','2014-03-26 10:11:00','Friends of Friends',NULL,NULL),(4,'RachelHen','JerryPin','Everything\'s great!','','2014-05-11 12:00:00','Friends of Friends',NULL,NULL),(5,'jerrypin','jerrypin','Hi!','','2014-05-12 11:46:30','Public',0,0),(6,'jerrypin','jerrypin','Hi!',NULL,'2014-05-12 11:46:59','Public',NULL,NULL);
+INSERT INTO `posts` VALUES (1,'JerryPin','RachelHen','Hi! How\'s it going?','','2014-03-25 10:10:00','Friends',NULL,NULL),(2,'JerryPin','JerryPin','Today I went to the beach!','','2014-03-02 12:00:00','Public',1,NULL),(3,'PhilPen','JerryPin','Hope everything is well.','','2014-03-26 10:11:00','Friends of Friends',NULL,NULL),(4,'RachelHen','JerryPin','Everything\'s great!','','2014-05-11 12:00:00','Friends of Friends',NULL,NULL),(5,'jerrypin','jerrypin','Hi!','','2014-05-12 11:46:30','Public',0,0),(6,'jerrypin','jerrypin','Hi!',NULL,'2014-05-12 11:46:59','Public',NULL,NULL),(7,'philpen','philpen','Hey',NULL,'2014-05-13 11:42:48','Friends',NULL,NULL),(8,'philpen','philpen','This is my wall! ',NULL,'2014-05-13 11:42:56','Friends',NULL,NULL),(9,'philpen','JerryPin','Hey Jerry How are things going?',NULL,'2014-05-13 11:43:05','Friends',NULL,NULL),(10,'philpen','RachelHen','Hi friend, you have not responded to me yet',NULL,'2014-05-13 11:46:14','Friends',NULL,NULL),(11,'philpen','philpen','',NULL,'2014-05-13 12:58:28','Friends',NULL,NULL);
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,6 +277,296 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'wildbook'
 --
+/*!50003 DROP FUNCTION IF EXISTS `are_fofs` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `are_fofs`(user1 VARCHAR(100), user2 VARCHAR(100)) RETURNS int(11)
+BEGIN
+
+SELECT COUNT(*) INTO @fofs FROM friends
+WHERE user2 IN (
+	SELECT sentby FROM friends WHERE receivedby IN (
+
+		SELECT sentby FROM friends WHERE receivedby = user1 AND status = 'Accepted'
+		UNION
+		SELECT receivedby FROM friends WHERE sentby = user1 AND status = 'Accepted' 
+
+	) AND status = 'Accepted' AND receivedby <> user1
+	UNION
+	SELECT receivedby FROM friends WHERE sentby IN (
+
+		SELECT sentby FROM friends WHERE receivedby = user1 AND status = 'Accepted'
+		UNION
+		SELECT receivedby FROM friends WHERE sentby = user1 AND status = 'Accepted' 
+
+	) AND status = 'Accepted' AND sentby <> user1
+);
+
+RETURN @fofs;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `are_friends` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `are_friends`(user1 VARCHAR(100), user2 VARCHAR(100)) RETURNS tinyint(1)
+BEGIN
+
+SELECT COUNT(*) INTO @returnVal FROM friends WHERE 
+( (sentby = user1 AND receivedby = user2) OR (sentby = user2 AND receivedby = user1) )
+AND status = 'Accepted';
+
+
+RETURN @returnVal;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `user_can_view_post` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `user_can_view_post`(pid INT(10), user VARCHAR(100)) RETURNS tinyint(1)
+BEGIN
+
+SELECT author, receiver, permission_type INTO @author, @receiver, @permission
+FROM posts WHERE postid = pid LIMIT 1;
+
+IF @author = user
+THEN RETURN 1;
+ELSEIF are_friends(@author, user) = 1 AND @permission IN ('Public','Friends', 'Friends of Friends')
+	THEN RETURN 1;
+ELSEIF are_fofs(@author, user) = 1 AND @permission IN ('Public', 'Friends of Friends')
+	THEN RETURN 1;
+ELSE RETURN 0;
+END IF;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `count_comment_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_comment_likes`(In commentid int(10))
+proc_main:Begin
+
+  Select count(*)
+  From likes_comments
+  Where cid = commentid;
+
+End proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `count_loc_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_loc_likes`(In activityid int(10), locationid int(10))
+proc_main:Begin
+
+  Select count(*)
+  From likes_locations_activities
+  Where actid = activityid And locid = locationid;
+
+End proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `count_post_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_post_likes`(In pid int(10))
+proc_main:Begin
+
+  Select count(*)
+  From likes_posts
+  Where postid = pid;
+
+End proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_friends_friends` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_friends_friends`(IN user VARCHAR(100))
+BEGIN
+
+SELECT sentby FROM friends WHERE receivedby IN (
+
+	SELECT sentby FROM friends WHERE receivedby = p_user AND status = 'Accepted'
+	UNION
+	SELECT receivedby FROM friends WHERE sentby = p_user AND status = 'Accepted' 
+
+) AND status = 'Accepted' AND receivedby <> p_user
+UNION
+SELECT receivedby FROM friends WHERE sentby IN (
+
+	SELECT sentby FROM friends WHERE receivedby = p_user AND status = 'Accepted'
+	UNION
+	SELECT receivedby FROM friends WHERE sentby = p_user AND status = 'Accepted' 
+
+) AND status = 'Accepted' AND sentby <> p_user;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_news_feed` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_news_feed`(
+IN p_user VARCHAR(100)
+)
+BEGIN
+
+-- view all posts by a user's friends or friends of friends
+
+SELECT postid, author, receiver, caption, content, posttime, permission_type, locid, actid
+FROM posts WHERE 
+( -- The author or receiver are in first level of friends
+	(
+		(receiver IN (
+			SELECT sentby FROM friends WHERE receivedby = p_user AND `status` = 'Accepted'
+			UNION
+			SELECT receivedby FROM friends WHERE sentby = p_user AND `status` = 'Accepted' 
+		) OR 
+			author IN (
+			
+			SELECT sentby FROM friends WHERE receivedby = p_user AND `status` = 'Accepted'
+			UNION
+			SELECT receivedby FROM friends WHERE sentby = p_user AND `status` = 'Accepted' 
+			)
+		)
+	)
+	AND (permission_type <> 'Private')
+)
+OR -- The author or receiver are in the second level of friends
+(
+	(
+		receiver IN (
+
+			SELECT sentby FROM friends WHERE receivedby IN (
+
+				SELECT sentby FROM friends WHERE receivedby = p_user AND `status` = 'Accepted'
+				UNION
+				SELECT receivedby FROM friends WHERE sentby = p_user AND `status` = 'Accepted' 
+
+			) AND `status` = 'Accepted' AND receivedby <> p_user
+			UNION
+			SELECT receivedby FROM friends WHERE sentby IN (
+
+				SELECT sentby FROM friends WHERE receivedby = p_user AND `status` = 'Accepted'
+				UNION
+				SELECT receivedby FROM friends WHERE sentby = p_user AND `status` = 'Accepted' 
+
+			) AND `status` = 'Accepted' AND sentby <> p_user
+
+
+
+		) OR author IN (
+
+
+			SELECT sentby FROM friends WHERE receivedby IN (
+
+				SELECT sentby FROM friends WHERE receivedby = p_user AND `status` = 'Accepted'
+				UNION
+				SELECT receivedby FROM friends WHERE sentby = p_user AND `status` = 'Accepted' 
+
+			) AND `status` = 'Accepted' AND receivedby <> p_user
+			UNION
+			SELECT receivedby FROM friends WHERE sentby IN (
+
+				SELECT sentby FROM friends WHERE receivedby = p_user AND `status` = 'Accepted'
+				UNION
+				SELECT receivedby FROM friends WHERE sentby = p_user AND `status` = 'Accepted' 
+
+			) AND `status` = 'Accepted' AND sentby <> p_user
+
+		)
+		AND (permission_type = 'Friends of Friends' OR permission_type = 'Public')
+	)
+)
+ORDER BY posttime DESC;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `get_user_wallposts` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -287,13 +577,99 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_wallposts`(username VARCHAR(100))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_wallposts`(IN username VARCHAR(100), IN viewer VARCHAR(100))
 BEGIN
+
+
 
 SELECT 
 postid, author, receiver, caption, content, posttime, permission_type, locid, actid
-FROM posts WHERE author = username OR receiver = username
+FROM posts WHERE ((author = username AND receiver = username) OR (receiver = username) )
+AND (SELECT user_can_view_post(postid, viewer)) = 1
 ORDER BY posttime DESC;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_comment_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_comment_likes`(
+	IN username 	VARCHAR(100),
+	IN cid        int(10),
+	OUT success bool
+)
+BEGIN
+-- Check for already-existing
+	SELECT 0 INTO success
+	FROM likes_comments l
+	WHERE l.username = username and l.cid = cid;
+
+  If success = 0
+  Then
+  Delete From likes_comments
+	USING l AS likes_comments
+  WHERE l.username = username and l.cid = cid;
+  End If;
+
+
+	IF success = 1
+	THEN
+	INSERT INTO likes_comments (username, cid)
+	VALUES (username, cid);
+	END IF;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_location_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_location_likes`(
+	IN username 	VARCHAR(100),
+	IN actid        int(10), 
+	IN locid        int(10),
+	OUT success bool
+)
+BEGIN
+-- Check for already-existing
+	SELECT 0 INTO success
+	FROM likes_locations_activities l
+	WHERE l.username = username and l.actid = actid and l.locid = locid;
+
+  If success = 0
+  Then
+  Delete From likes_locations_activities 
+	USING l AS likes_locations_activities 
+  WHERE l.username = username and l.actid = actid and l.locid = locid;
+  End If;
+
+
+	IF success = 1
+	THEN
+	INSERT INTO likes_locations_activities (username, actid, locid)
+	VALUES (username, actid, locid);
+	END IF;
 
 END ;;
 DELIMITER ;
@@ -355,6 +731,46 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insert_post_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_post_likes`(
+	IN username 	VARCHAR(100),
+	IN postid        int(10),
+	OUT success bool
+)
+BEGIN
+
+	DECLARE _continue INT DEFAULT 0;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET _continue = 1;
+
+-- Check for already-existing
+	SELECT COUNT(*) INTO success
+	FROM likes_posts l
+	WHERE l.username = username and l.postid = postid;
+
+  If success = 1
+  Then
+  Delete From likes_posts 
+  WHERE username = username and postid = postid;
+  ELSE
+	INSERT INTO likes_posts (username, postid)
+	VALUES (username, postid);
+	END IF;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `insert_user` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -402,6 +818,52 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_comment` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_comment`(IN commentId INT(10))
+BEGIN
+
+SELECT author, postid, posttime, `text`
+FROM comments
+WHERE cid = commentId;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_comment_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_comment_likes`(In commentid int(10))
+proc_main:Begin
+
+  Select username, firstname, lastname
+  From likes_comments JOIN users
+  Where cid = commentid;
+
+End proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `populate_post` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -419,6 +881,52 @@ FROM posts
 WHERE postid = id;
 
 END proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_post_comments` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_post_comments`(IN id int(10))
+proc_main:BEGIN
+
+  SELECT cid
+  FROM comments
+  WHERE postid = id;
+
+END proc_main ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `populate_post_likes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `populate_post_likes`(In pid int(10))
+proc_main:Begin
+
+  Select LP.username, firstname, lastname
+  From likes_posts LP JOIN users U ON (U.username = LP.username)
+  Where postid = pid;
+
+End proc_main ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -478,4 +986,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-12 14:15:11
+-- Dump completed on 2014-05-13 13:28:25
