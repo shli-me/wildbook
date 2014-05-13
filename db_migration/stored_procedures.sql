@@ -13,6 +13,28 @@ proc_main:BEGIN
 
 END proc_main $$
 
+DELIMITER $$
+
+CREATE PROCEDURE `populate_search1` (IN search VARCHAR(100))
+proc_main:BEGIN
+
+  SELECT username, firstname, lastname
+  FROM users
+  WHERE firstname REGEXP search || lastname REGEXP search;
+
+END proc_main $$
+
+DELIMITER $$
+
+CREATE PROCEDURE `populate_search2` (IN search VARCHAR(100))
+    proc_main:BEGIN
+
+    SELECT locid, name
+    FROM locations
+    WHERE name REGEXP search
+
+  END proc_main $$
+
 
 DELIMITER $$
 
