@@ -1,16 +1,11 @@
-<?php
+
 /**
  * Created by PhpStorm.
  * User: IGDB
  * Date: 5/12/14
  * Time: 5:31 PM
  */
-namespace wildbook;
 
-
-class LocationTest {
-}
-?>
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +24,7 @@ class LocationTest {
                 <!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
                 <!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
                 <!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
-                center: {lat: 40.7127, lng: -74.0059},<!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
+                center: { <?php echo"lat: {$_GET['lat']} , lng: {$_GET['long']}" ?>},<!-- USE THE LATITUDE AND LONGITUDE FROM THE DATABSE RIGHT HERE-->
                 zoom: 12
             };
             var map = new google.maps.Map(document.getElementById("map-canvas"),
