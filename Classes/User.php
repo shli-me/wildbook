@@ -156,6 +156,18 @@ namespace wildbook {
             return $this->zip;
         }
 
+        public function wholename()
+        {
+            return $this->firstName . " " . $this->lastName;
+        }
+        public function display()
+        {
+            ?>
+                <div>
+                    <?php echo  $this->wholename() ?>
+                </div>
+            <?php
+        }
 
     }
 }

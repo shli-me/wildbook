@@ -39,11 +39,11 @@ sessionStart();
                 ?>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <form class="navbar-form navbar-left" role="search">
+                    <form class="navbar-form navbar-left" name = "search" action = "Search.php" method = "get">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
+                            <input type="text" class="form-control" placeholder="Search" name = "search">
                         </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
+                        <input type="submit" class="btn btn-default">Submit</button>
                     </form>
                 </div><!--/.navbar-collapse -->
             </div>

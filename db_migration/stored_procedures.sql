@@ -15,23 +15,23 @@ END proc_main $$
 
 DELIMITER $$
 
-CREATE PROCEDURE `populate_search1` (IN search VARCHAR(100))
-proc_main:BEGIN
+CREATE PROCEDURE `populate_search1` (search VARCHAR(100))
+BEGIN
 
-  SELECT username, firstname, lastname
+  SELECT username
   FROM users
   WHERE firstname REGEXP search || lastname REGEXP search;
 
-END proc_main $$
+END $$
 
 DELIMITER $$
 
 CREATE PROCEDURE `populate_search2` (IN search VARCHAR(100))
     proc_main:BEGIN
 
-    SELECT locid, name
+    SELECT locid
     FROM locations
-    WHERE name REGEXP search
+    WHERE name REGEXP search;
 
   END proc_main $$
 
@@ -89,6 +89,16 @@ proc_main:Begin
   Where actid = activityid And locid = locationid;
 
 End proc_main $$
+
+DELIMITER $$
+Create Procedure `populate_loc` (In locationid int(10))
+    proc_main:Begin
+
+    Select locid, name, longitude, latitude
+    From locations
+    Where locid = locationid;
+
+  End proc_main $$
 
 DELIMITER $$
 
